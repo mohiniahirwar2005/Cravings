@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import deliveryboy from "../assets/deliberyboy.png";
+import api from "../config/api.config";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,8 +22,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here, e.g., send loginData to the server
-    //Validate loginData
+
+
 
     console.log("Login data submitted:", loginData);
 
@@ -29,6 +31,16 @@ const Login = () => {
       email: loginData.email.toLowerCase(),
       password: loginData.password,
     };
+    try {
+      const res = await api.post("auth/login", payload);
+      toast.success(res.data.message);
+      console.log(res.data.data.photo);
+    } catch (error) {
+      toast.error(
+        error.response.status + " | " + error.response?.data?.message ||
+          error.message,
+      );
+    }
   };
 
   const inputClass =
@@ -44,7 +56,9 @@ const Login = () => {
           <div className="text-xl font-semibold mb-4">Welcome Back!</div>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-            {/* Email */}
+
+
+
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="email">Email</label>
               <input
@@ -57,7 +71,8 @@ const Login = () => {
               />
             </div>
 
-            {/* Password */}
+
+            
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="password">Password</label>
               <input
