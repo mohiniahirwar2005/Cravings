@@ -17,8 +17,8 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setLoginData((prev) => ({
-      ...prev,
+    setLoginData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
@@ -31,104 +31,132 @@ const Login = () => {
       return;
     }
 
-    try {
-      const payload = {
-        email: loginData.email.toLowerCase(),
-        password: loginData.password,
-      };
+    setValidateError("");
 
+    const payload = {
+      email: loginData.email.toLowerCase(),
+      password: loginData.password,
+    };
+
+    try {
       const res = await api.post("/auth/login", payload);
 
       toast.success(res.data.message);
 
-      // Save User
+      
       sessionStorage.setItem(
         "UserData",
         JSON.stringify(res.data.data)
       );
 
-      // Go to Dashboard
+      
+      if (res.data.token) {
+        sessionStorage.setItem("token", res.data.token);
+      }
+
+     
       navigate("/user/dashboard");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || error.message
+        error.response?.data?.message || "Login Failed"
       );
     }
   };
 
   const inputClass =
-    "border p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500";
+    "border p-2 rounded focus:outline-none focus:ring-2 focus:ring-(--accent)";
 
   return (
-    <div className="min-h-[90vh] bggradient-to-r from-orange-100 to-orange-300 grid md:grid-cols-2 p-10">
-      <div className="hidden md:flex items-center justify-center">
-        <img src={deliveryboy} alt="" className="w-96" />
-      </div>
+    <>
+      <div className="min-h-[90vh] bg-linear-to-r from-(--secondary) to-(--primary) grid grid-cols-2 p-10">
 
-      <div className="bg-white rounded-xl shadow-xl p-8 flex flex-col justify-center">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Welcome Back 👋
-        </h2>
+     
+        <div className="hidden md:block">
+          <img
+            src={deliveryboy}
+            alt="Delivery Boy"
+            className="rotate-y-180"
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label>Email</label>
+       
+        <div className="w-2xl bg-(--background) rounded shadow p-10 flex flex-col justify-center">
 
-            <input
-              type="email"
-              name="email"
-              value={loginData.email}
-              onChange={handleChange}
-              className={`${inputClass} w-full`}
-            />
+          <div className="text-xl font-semibold mb-4">
+            Welcome Back!
           </div>
 
-          <div>
-            <label>Password</label>
-
-            <input
-              type="password"
-              name="password"
-              value={loginData.password}
-              onChange={handleChange}
-              className={`${inputClass} w-full`}
-            />
-          </div>
-
-          {validateError && (
-            <p className="text-red-500">{validateError}</p>
-          )}
-
-          <button
-            className="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-2 gap-4"
           >
-            Login
-          </button>
-        </form>
+           
+            <div className="col-span-2 flex flex-col gap-2">
+              <label htmlFor="email">Email</label>
 
-        <div className="text-center mt-5">
-          <p>
-            Don't have an account?{" "}
-            <button
-              onClick={() => navigate("/register")}
-              className="text-orange-500 font-semibold"
-            >
-              Register
-            </button>
-          </p>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={loginData.email}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
 
-          <p className="mt-2">
-            Having Trouble?{" "}
+        
+            <div className="col-span-2 flex flex-col gap-2">
+              <label htmlFor="password">Password</label>
+
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={loginData.password}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            {validateError && (
+              <p className="text-red-500 text-sm col-span-2">
+                {validateError}
+              </p>
+            )}
+
             <button
-              onClick={() => navigate("/contact-us")}
-              className="text-orange-500 font-semibold"
+              type="submit"
+              className="col-span-2 mt-2 bg-(--primary) text-white py-2 px-4 rounded hover:bg-(--accent)"
             >
-              Contact Us
+              Login
             </button>
-          </p>
+          </form>
+
+          <div className="mt-6 text-center space-y-2">
+            <p className="text-sm">
+              Don't have an account?{" "}
+              <button
+                onClick={() => navigate("/register")}
+                className="text-(--primary) hover:underline font-semibold"
+              >
+                Register here
+              </button>
+            </p>
+
+            <p className="text-sm">
+              Having Trouble?{" "}
+              <button
+                onClick={() => navigate("/contact-us")}
+                className="text-(--primary) hover:underline font-semibold"
+              >
+                Contact Us
+              </button>
+            </p>
+          </div>
+
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
