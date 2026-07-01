@@ -6,120 +6,129 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
-  const [validateError, setValidateError] = useState();
+  const [validateError, setValidateError] = useState("");
 
   const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
 
-    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+    setLoginData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!loginData.email || !loginData.password) {
+      setValidateError("Please fill all fields");
+      return;
+    }
 
-
-    console.log("Login data submitted:", loginData);
-
-    const payload = {
-      email: loginData.email.toLowerCase(),
-      password: loginData.password,
-    };
     try {
-      const res = await api.post("auth/login", payload);
+      const payload = {
+        email: loginData.email.toLowerCase(),
+        password: loginData.password,
+      };
+
+      const res = await api.post("/auth/login", payload);
+
       toast.success(res.data.message);
-      console.log(res.data.data.photo);
+
+      // Save User
+      sessionStorage.setItem(
+        "UserData",
+        JSON.stringify(res.data.data)
+      );
+
+      // Go to Dashboard
+      navigate("/user/dashboard");
     } catch (error) {
       toast.error(
-        error.response.status + " | " + error.response?.data?.message ||
-          error.message,
+        error.response?.data?.message || error.message
       );
     }
   };
 
   const inputClass =
-    "border p-2 rounded focus:outline-none focus:ring-2 focus:ring-(--accent)";
+    "border p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500";
 
   return (
-    <>
-      <div className="min-h-[90vh] bg-linear-to-r from-(--secondary) to-(--primary) grid grid-cols-2 p-10">
-        <div className="hidden md:block">
-          <img src={deliveryboy} alt="" className="rotate-y-180" />
-        </div>
-        <div className="w-2xl bg-(--background) rounded shadow p-10 flex flex-col justify-center">
-          <div className="text-xl font-semibold mb-4">Welcome Back!</div>
+    <div className="min-h-[90vh] bggradient-to-r from-orange-100 to-orange-300 grid md:grid-cols-2 p-10">
+      <div className="hidden md:flex items-center justify-center">
+        <img src={deliveryboy} alt="" className="w-96" />
+      </div>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+      <div className="bg-white rounded-xl shadow-xl p-8 flex flex-col justify-center">
+        <h2 className="text-3xl font-bold mb-6 text-center">
+          Welcome Back 👋
+        </h2>
 
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label>Email</label>
 
-
-            <div className="col-span-2 flex flex-col gap-2">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={loginData.email}
-                onChange={handleChange}
-                className={inputClass}
-              />
-            </div>
-
-
-            
-            <div className="col-span-2 flex flex-col gap-2">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={loginData.password}
-                onChange={handleChange}
-                className={inputClass}
-              />
-            </div>
-
-            {validateError && (
-              <p className="text-red-500 text-sm col-span-2">{validateError}</p>
-            )}
-
-            <button
-              type="submit"
-              className="col-span-2 mt-2 bg-(--primary) text-white py-2 px-4 rounded hover:bg-(--accent)"
-            >
-              Login
-            </button>
-          </form>
-
-          <div className="mt-6 text-center space-y-2">
-            <p className="text-sm">
-              Don't have an account?{" "}
-              <button
-                onClick={() => navigate("/register")}
-                className="text-(--primary) hover:underline font-semibold"
-              >
-                Register here
-              </button>
-            </p>
-            <p className="text-sm">
-              Having Trouble?{" "}
-              <button
-                onClick={() => navigate("/contact")}
-                className="text-(--primary) hover:underline font-semibold"
-              >
-                Contact Us
-              </button>
-            </p>
+            <input
+              type="email"
+              name="email"
+              value={loginData.email}
+              onChange={handleChange}
+              className={`${inputClass} w-full`}
+            />
           </div>
+
+          <div>
+            <label>Password</label>
+
+            <input
+              type="password"
+              name="password"
+              value={loginData.password}
+              onChange={handleChange}
+              className={`${inputClass} w-full`}
+            />
+          </div>
+
+          {validateError && (
+            <p className="text-red-500">{validateError}</p>
+          )}
+
+          <button
+            className="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
+          >
+            Login
+          </button>
+        </form>
+
+        <div className="text-center mt-5">
+          <p>
+            Don't have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-orange-500 font-semibold"
+            >
+              Register
+            </button>
+          </p>
+
+          <p className="mt-2">
+            Having Trouble?{" "}
+            <button
+              onClick={() => navigate("/contact-us")}
+              className="text-orange-500 font-semibold"
+            >
+              Contact Us
+            </button>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
