@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import deliveryboy from "../assets/deliberyboy.png";
 import api from "../config/api.config";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { setUser, setIsLogin, isLogin } = useAuth();
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
@@ -12,26 +14,21 @@ const Login = () => {
     password: "",
   });
 
-  const [validateError, setValidateError] = useState("");
+  const [validateError, setValidateError] = useState();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const name = e.target.name;
+    const value = e.target.value;
 
-    setLoginData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!loginData.email || !loginData.password) {
-      setValidateError("Please fill all fields");
-      return;
-    }
+    
 
-    setValidateError("");
+    console.log("Login data submitted:", loginData);
 
     const payload = {
       email: loginData.email.toLowerCase(),
@@ -42,23 +39,14 @@ const Login = () => {
       const res = await api.post("/auth/login", payload);
 
       toast.success(res.data.message);
-
-      
-      sessionStorage.setItem(
-        "UserData",
-        JSON.stringify(res.data.data)
-      );
-
-      
-      if (res.data.token) {
-        sessionStorage.setItem("token", res.data.token);
-      }
-
-     
+      sessionStorage.setItem("UserData", JSON.stringify(res.data.data));
+      setUser(res.data.data);
+      // setIsLogin(true);
       navigate("/user/dashboard");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Login Failed"
+        error.response.status + " | " + error.response?.data?.message ||
+          error.message,
       );
     }
   };
@@ -70,27 +58,16 @@ const Login = () => {
     <>
       <div className="min-h-[90vh] bg-linear-to-r from-(--secondary) to-(--primary) grid grid-cols-2 p-10">
 
-     
         <div className="hidden md:block">
-          <img
-            src={deliveryboy}
-            alt="Delivery Boy"
-            className="rotate-y-180"
-          />
+          <img src={deliveryboy} alt="" className="rotate-y-180" />
         </div>
 
-       
         <div className="w-2xl bg-(--background) rounded shadow p-10 flex flex-col justify-center">
 
-          <div className="text-xl font-semibold mb-4">
-            Welcome Back!
-          </div>
+          <div className="text-xl font-semibold mb-4">Welcome Back!</div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-2 gap-4"
-          >
-           
+          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+            {/* Email */}
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="email">Email</label>
 
@@ -104,7 +81,7 @@ const Login = () => {
               />
             </div>
 
-        
+            {/* Password */}
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="password">Password</label>
 
@@ -119,9 +96,7 @@ const Login = () => {
             </div>
 
             {validateError && (
-              <p className="text-red-500 text-sm col-span-2">
-                {validateError}
-              </p>
+              <p className="text-red-500 text-sm col-span-2">{validateError}</p>
             )}
 
             <button
@@ -146,15 +121,17 @@ const Login = () => {
             <p className="text-sm">
               Having Trouble?{" "}
               <button
-                onClick={() => navigate("/contact-us")}
+                onClick={() => navigate("/contact")}
                 className="text-(--primary) hover:underline font-semibold"
               >
                 Contact Us
               </button>
             </p>
+        
           </div>
 
         </div>
+
       </div>
     </>
   );
