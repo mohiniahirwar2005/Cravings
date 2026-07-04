@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import deliberyboy from "../assets/deliberyboy.png";
+import deliveryboy from "../assets/deliberyboy.png";
 
 const ContactUs = () => {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ const ContactUs = () => {
     <>
       <div className="min-h-[90vh] bg-linear-to-r from-(--secondary) to-(--primary) grid grid-cols-2 p-10">
         <div className="hidden md:block">
-          <img src={deliberyboy} alt="" className="rotate-y-180" />
+          <img src={deliveryboy} alt="" className="rotate-y-180" />
         </div>
         <div className="w-2xl bg-(--background) rounded shadow p-10 flex flex-col justify-center">
           <div className="text-xl font-semibold mb-4">Contact Us</div>
@@ -184,4 +184,3 @@ const ContactUs = () => {
 };
 
 export default ContactUs;
-

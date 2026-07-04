@@ -8,7 +8,6 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const { setUser, setIsLogin, isLogin } = useAuth();
   const navigate = useNavigate();
-
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -25,8 +24,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    
+    // Handle login logic here, e.g., send loginData to the server
+    //Validate loginData
 
     console.log("Login data submitted:", loginData);
 
@@ -37,7 +36,6 @@ const Login = () => {
 
     try {
       const res = await api.post("/auth/login", payload);
-
       toast.success(res.data.message);
       sessionStorage.setItem("UserData", JSON.stringify(res.data.data));
       setUser(res.data.data);
@@ -57,20 +55,16 @@ const Login = () => {
   return (
     <>
       <div className="min-h-[90vh] bg-linear-to-r from-(--secondary) to-(--primary) grid grid-cols-2 p-10">
-
         <div className="hidden md:block">
           <img src={deliveryboy} alt="" className="rotate-y-180" />
         </div>
-
         <div className="w-2xl bg-(--background) rounded shadow p-10 flex flex-col justify-center">
-
           <div className="text-xl font-semibold mb-4">Welcome Back!</div>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
             {/* Email */}
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="email">Email</label>
-
               <input
                 type="email"
                 id="email"
@@ -84,7 +78,6 @@ const Login = () => {
             {/* Password */}
             <div className="col-span-2 flex flex-col gap-2">
               <label htmlFor="password">Password</label>
-
               <input
                 type="password"
                 id="password"
@@ -117,7 +110,6 @@ const Login = () => {
                 Register here
               </button>
             </p>
-
             <p className="text-sm">
               Having Trouble?{" "}
               <button
@@ -127,14 +119,12 @@ const Login = () => {
                 Contact Us
               </button>
             </p>
-        
           </div>
-
         </div>
-
       </div>
     </>
   );
 };
 
 export default Login;
+
