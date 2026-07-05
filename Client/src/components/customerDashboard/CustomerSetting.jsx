@@ -62,7 +62,7 @@ const CustomerSetting = () => {
       const updatedUser = response.data.data;
       setProfileData({
         fullName: updatedUser.fullName || "",
-        email: updatedUser.email || "",
+        email: updatedUser.email || "", 
         phone: updatedUser.phone || "",
         photo: updatedUser.photo || "https://via.placeholder.com/150",
       });
