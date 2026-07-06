@@ -21,7 +21,7 @@ const CarouselComponent = () => {
 
     return () => clearInterval(interval);
   }, [autoPlay, images.length]);
- 
+
   const goToSlide = (index) => {
     setCurrentSlide(index);
     setAutoPlay(false);

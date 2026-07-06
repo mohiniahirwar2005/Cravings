@@ -19,3 +19,4 @@ export const genToken = async (user, res) => {
     throw next(error);
   }
 };
+
