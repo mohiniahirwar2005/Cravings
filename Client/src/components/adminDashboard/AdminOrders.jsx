@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomerOrders = () => {
+const AdminOrders = () => {
   return (
     <div className="overflow-y-auto h-full">
       <h2 className="text-2xl font-bold mb-6">My Orders</h2>
@@ -28,5 +28,5 @@ const CustomerOrders = () => {
   );
 };
 
-export default CustomerOrders;
+export default AdminOrders;
 
