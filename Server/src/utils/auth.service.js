@@ -41,3 +41,4 @@ export const genOTPToken = async (user, res) => {
     throw next(error);
   }
 };
+

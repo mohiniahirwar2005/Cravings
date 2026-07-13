@@ -45,3 +45,4 @@ export default sendEmail;
 //   `<h1 style='color:blue;'>Test Message</h1>
 //   <p style='color:red;'>Batch 6</p>`,
 // );
+
