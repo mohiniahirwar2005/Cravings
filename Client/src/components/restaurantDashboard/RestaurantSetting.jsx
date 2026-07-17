@@ -1,58 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import RestaurantInformation from "./settings/RestaurantInformation";
+import ResturantCoreDetails from "./settings/ResturantCoreDetails";
+import RestaurantPhotos from "./settings/RestaurantPhotos";
 
 const RestaurantSetting = () => {
+  const Tabs = [
+    { id: "information", label: "Information" },
+    { id: "coreDetails", label: "Core Details" },
+    { id: "photos", label: "Photos" },
+  ];
+  const [activeTab, setActiveTab] = useState("coreDetails");
+
+  const [isRestaurantOpen, setIsRestaurantOpen] = useState(true);
   return (
-    <div>
+    <>
+      <div className=" h-full flex flex-col">
+        <div className="border-b border-(--color-secondary)/50 flex justify-between mb-2 w-full">
+          <div className="flex gap-3 ">
+            {Tabs.map((tab, idx) => (
+              <>
+                <div
+                  key={idx}
+                  className={`p-2 uppercase cursor-pointer ${activeTab === tab.id ? "text-(--color-primary) border-b-3 border-(--color-primary)" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </div>
+              </>
+            ))}
+          </div>
 
-      <h1 className="text-3xl font-bold mb-6">
-        Restaurant Settings
-      </h1>
-
-      <div className="bg-white shadow rounded-xl p-6 max-w-xl">
-
-        <div className="mb-4">
-          <label className="font-semibold">
-            Restaurant Name
-          </label>
-
-          <input
-            type="text"
-            placeholder="Food Zone"
-            className="border rounded-lg p-3 w-full mt-2"
-          />
+          <div className="flex items-center gap-3">
+            <label className="w-22 text-xs font-semibold">Currently Open</label>
+            <input
+              type="checkbox"
+              name="isOpen"
+              checked={isRestaurantOpen}
+              onChange={() => setIsRestaurantOpen(!isRestaurantOpen)}
+              className=" w-4 h-4 accent-(--color-primary)"
+            />
+          </div>
         </div>
-
-        <div className="mb-4">
-          <label className="font-semibold">
-            Email
-          </label>
-
-          <input
-            type="email"
-            placeholder="restaurant@gmail.com"
-            className="border rounded-lg p-3 w-full mt-2"
-          />
+        <div className="h-full rounded-lg bg-(--color-base-200) p-2">
+          {activeTab === "information" && <RestaurantInformation />}
+          {activeTab === "coreDetails" && <ResturantCoreDetails />}
+          {activeTab === "photos" && <RestaurantPhotos />}
         </div>
-
-        <div className="mb-4">
-          <label className="font-semibold">
-            Phone
-          </label>
-
-          <input
-            type="text"
-            placeholder="9876543210"
-            className="border rounded-lg p-3 w-full mt-2"
-          />
-        </div>
-
-        <button className="bg-orange-500 text-white px-6 py-3 rounded-lg">
-          Save Changes
-        </button>
-
       </div>
-
-    </div>
+    </>
   );
 };
 
